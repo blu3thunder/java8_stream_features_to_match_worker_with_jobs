@@ -18,18 +18,114 @@ public class SpringBootRestTestClient2 {
  
     public static final String REST_WORKER_URI = "http://test.swipejobs.com/api/workers";
     public static final String REST_JOBS_URI = "http://test.swipejobs.com/api/jobs";
-	//public static final String REST_WORKER_URI = "http://localhost:8080/SpringBootRestApiExample2/api";
-    //public static final String REST_JOBS_URI = "http://localhost:8080/SpringBootRestApiExample2/api";
-     
+	
+    
+    private static void fetchAllWorkers()
+    {
+    	 RestTemplate restTemplate = new RestTemplate();
+         List<LinkedHashMap> list = restTemplate.getForObject(REST_WORKER_URI, List.class);
+         
+         List<Worker> l = new ArrayList<>();
+         for(LinkedHashMap lm : list)
+         {
+        	 Worker wc = new Worker();
+        	 Set<String> keys = lm.keySet();
+             for(String k:keys){
+            	 if (k.equals("userId"))
+            		 wc.setUserId((int) lm.get(k));
+            	 if(k.equals("skills"))
+            	 {
+            		 List<String> arr = (List<String>) lm.get(k);
+            		 wc.setSkills(arr);
+            	 }
+            	if(k.equals("name"))
+            		 wc.setName((String) lm.get(k).toString());
+             }
+             l.add(wc);
+         }
+         
+         System.out.println("New list formed is \n");
+         l.stream().forEach(System.out::println);
+      
+    }
+    
+    
+    private static void fetchAllJobs()
+    {
+    	RestTemplate restTemplate = new RestTemplate();
+        List<LinkedHashMap> jobs = restTemplate.getForObject(REST_JOBS_URI, List.class);
+        
+        List<Jobs> ll = new ArrayList<>();
+        for(LinkedHashMap jj : jobs)
+        {
+       	 Jobs jb = new Jobs();
+       	 Set<String> keys = jj.keySet();
+            for(String k:keys){
+           	 if (k.equals("jobTitle"))
+           		 jb.setJobTitle( jj.get(k).toString());
+           	 if(k.equals("billRate"))
+           		 jb.setBillRate(jj.get(k).toString());
+           	
+           	if(k.equals("jobId"))
+           		jb.setJobId((int) jj.get(k));
+           	if(k.equals("company"))
+           		jb.setCompany( (String) jj.get(k));
+           	
+            }
+            ll.add(jb);
+        }
+        
+        
+        System.out.println("Job list formed is \n");
+        ll.stream().forEach(System.out::println);
+    }
+    
+    
+    private static void searchWorkerById()
+    {
+    	
+    	 RestTemplate restTemplate = new RestTemplate();
+         List<LinkedHashMap> list = restTemplate.getForObject(REST_WORKER_URI, List.class);
+         int id=10;
+         System.out.println("Found Worker with id " + id );
+         List<Worker> l = new ArrayList<>();
+         for(LinkedHashMap lm : list)
+         {
+        	 Worker wc = new Worker();
+        	 Set<String> keys = lm.keySet();
+             for(String k:keys){
+            	 if (k.equals("userId"))
+            		 wc.setUserId((int) lm.get(k));
+            	 if(k.equals("skills"))
+            	 {
+            		 List<String> arr = (List<String>) lm.get(k);
+            		 wc.setSkills(arr);
+            	 }
+            	if(k.equals("name"))
+            		 wc.setName((String) lm.get(k).toString());
+             }
+             l.add(wc);
+         }
+         
+         System.out.println("New list formed is \n");
+         l.stream().forEach(System.out::println);
+         
+         System.out.println("found the Worker details using method predicate");
+         System.out.println(filterWorker(l, findWorkerById(id)));
+         System.out.println("found the Worker details using inline predicate ");
+         System.out.println(l.stream().filter(p -> p.getUserId() == id).collect(Collectors.<Worker>toList()));
+      
+    }
     
     
     
-    /* GET */
-    @SuppressWarnings("unchecked")
-    private static void listAllWorker()
+    
+    private static void findUpto3JobsForWorkerId()
     {
         System.out.println("Testing listAllWorker api.");
+        
          int id = 10;
+         System.out.println("Worker with id " + id + "to be searched." );
         RestTemplate restTemplate = new RestTemplate();
         List<LinkedHashMap> list = restTemplate.getForObject(REST_WORKER_URI, List.class);
         List<LinkedHashMap> jobs = restTemplate.getForObject(REST_JOBS_URI, List.class);
@@ -110,19 +206,19 @@ public class SpringBootRestTestClient2 {
 		 return  ss.stream().filter(predicate).collect(Collectors.<Worker>toList());
 	 }
      
-    /* GET */
-    private static void findWorkerById()
+    
+    /*private static void findWorkerById()
     {
         System.out.println("Testing findWorkerById api.");
         RestTemplate restTemplate = new RestTemplate();
         Worker worker = restTemplate.getForObject(REST_WORKER_URI, Worker.class);
         System.out.println("\n worker=]" + (null != worker ? worker.toString() : null) + "[");
-    }
+    }*/
      
     
     
-    /* GET */
-    private static void findJobsMatchingWorkerSkills()
+    
+   /* private static void findJobsMatchingWorkerSkills()
     {
         System.out.println("Testing findJobsMatchingWorkerSkills api.");
         RestTemplate restTemplate = new RestTemplate();
@@ -138,13 +234,16 @@ public class SpringBootRestTestClient2 {
         {
             System.out.println("No Jobs found.");
         }
-    }
+    }*/
     
  
     public static void main(String args[])
     {
-        listAllWorker();
-       // findWorkerById();
-      //  findJobsMatchingWorkerSkills();
+    	
+        fetchAllWorkers();
+        fetchAllJobs();
+        searchWorkerById();
+        findUpto3JobsForWorkerId();
+      
     }
 }
