@@ -1,20 +1,21 @@
 package com.swipe.springboot.model;
 
-import java.util.Date;
-import java.util.HashMap;
-
 public class Jobs {
 	
 	/*private boolean driverLicenseRequired;
 	private String [] requiredCertificates;
 	private HashMap<String, String> location;*/
+	
 	private String billRate;
 	/*private int workersRequired;
 	private Date startDate;
 	private String about;*/
+	
 	private String jobTitle;
+	
 	private String company;
 	/*private long guid;*/
+	
 	private int jobId;
 	
 	

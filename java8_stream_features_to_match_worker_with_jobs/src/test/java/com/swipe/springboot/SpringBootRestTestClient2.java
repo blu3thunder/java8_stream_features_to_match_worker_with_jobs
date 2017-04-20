@@ -3,6 +3,7 @@ package com.swipe.springboot;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -39,7 +40,11 @@ public class SpringBootRestTestClient2 {
             		 wc.setSkills(arr);
             	 }
             	if(k.equals("name"))
-            		 wc.setName((String) lm.get(k).toString());
+            	{
+            		Map<String, String> arr = (Map<String, String>) lm.get(k);
+           		 wc.setName(arr);
+            	}
+            		 
              }
              l.add(wc);
          }
@@ -102,7 +107,11 @@ public class SpringBootRestTestClient2 {
             		 wc.setSkills(arr);
             	 }
             	if(k.equals("name"))
-            		 wc.setName((String) lm.get(k).toString());
+            	{
+            		Map<String, String> arr = (Map<String, String>) lm.get(k);
+           		 wc.setName(arr);
+            	}
+            		 
              }
              l.add(wc);
          }
@@ -144,7 +153,11 @@ public class SpringBootRestTestClient2 {
             		 wc.setSkills(arr);
             	 }
             	if(k.equals("name"))
-            		 wc.setName((String) lm.get(k).toString());
+            	{
+            		Map<String, String> arr = (Map<String, String>) lm.get(k);
+           		 wc.setName(arr);
+            	}
+            		 
              }
              l.add(wc);
          }

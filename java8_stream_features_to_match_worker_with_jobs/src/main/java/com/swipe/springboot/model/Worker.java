@@ -1,16 +1,16 @@
 package com.swipe.springboot.model;
 
 import java.util.List;
+import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Worker {
 
 	
 	 /*private String rating;
 	 private boolean isActive;
 	 private String [] certificates;*/
+	
 	 private List<String> skills;
 	/* private HashMap<String, String> jobSearchAddresses;
 	 private String transportation;
@@ -18,12 +18,14 @@ public class Worker {
 	 private HashMap<String, String> availability;
 	 private String phone;
 	 private String email;*/
-	 private String name;
+	
+	 private Map<String, String> name;
 	/* private int age;
 	 private String guid;*/
+	
 	 private int userId;
 	 
-	public Worker(int userId, String name,  List<String> skills) {
+	public Worker(int userId, Map<String, String> name,  List<String> skills) {
 		
 		this.skills = skills;
 		this.name = name;
@@ -36,7 +38,7 @@ public class Worker {
 	
 	@Override
 	public String toString() {
-		return "Worker [userId=" + userId + "]name=" +  name + "]skills=" + (null != skills ? skills.toString() : null + "]");
+		return "Worker [userId=" + userId + "]name=" +  (null != name ? name.toString() : null) + "]skills=" + (null != skills ? skills.toString() : null + "]");
 	}
 
 
@@ -141,7 +143,7 @@ public class Worker {
 		}*/
 
 
-		public String getName() {
+		public Map<String, String> getName() {
 			return name;
 		}
 
@@ -156,7 +158,7 @@ public class Worker {
 		}
 
 
-		public void setName(String name) {
+		public void setName(Map<String, String> name) {
 			this.name = name;
 		}
 
