@@ -12,19 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swipe.springboot.model.Jobs;
 import com.swipe.springboot.model.Worker;
-import com.swipe.springboot.service.WorkerService;
-import com.swipe.springboot.util.ErrorDesc;
 import com.swipe.springboot.util.SwipePredicate;
 
 @RestController
@@ -39,26 +34,7 @@ public class RestApiController2 {
 	@Autowired
 	public RestTemplate restTemplate;
 
-	@Autowired
-	WorkerService workerService; //Service which will do all data retrieval work
 	
-	/*private RestTemplate restTemplate() {
-
-	    ObjectMapper mapper = new ObjectMapper();
-	    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-	    mapper.registerModule(new Jackson2HalModule());
-
-	    MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-	    converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
-	    converter.setObjectMapper(mapper);
-
-	    List<HttpMessageConverter<?>> converterList = new ArrayList<HttpMessageConverter<?>>();
-	    converterList.add(converter);
-	    RestTemplate restTemplate = new RestTemplate(converterList);
-
-	    return restTemplate;
-	}
-*/
 	// -------------------Retrieve All workers---------------------------------------------
 
 	@RequestMapping(value = "/workers/", method = RequestMethod.GET , produces = "application/json")
@@ -66,7 +42,7 @@ public class RestApiController2 {
 		
 		 RestTemplate restTemplate = new RestTemplate();
          List<LinkedHashMap> list = restTemplate.getForObject(WORKER_URL, List.class);
-       //  restTemplate.exchange(WORKER_URL, RequestMethod.GET , requestEntity, responseType)
+
          List<Worker> l = new ArrayList<>();
          for(LinkedHashMap lm : list)
          {
@@ -90,16 +66,38 @@ public class RestApiController2 {
          }
          
          return new ResponseEntity<List<Worker>>(l, HttpStatus.OK);
+	
+	}
+	
+	
+	
+	@RequestMapping(value = "/jobs/", method = RequestMethod.GET)
+	public ResponseEntity<List<Jobs>> listAllJobs() {
 		
-		/*Worker worker = restTemplate.getForObject(WORKER_URL, Worker.class);
-		System.out.println("Response from online api.");
-		System.out.println(worker.toString());
-		List<Worker> workers = workerService.findAllWorkers();
-		if (workers.isEmpty()) {
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
-			// You many decide to return HttpStatus.NOT_FOUND
-		}
-		return new ResponseEntity<List<Worker>>(workers, HttpStatus.OK);*/
+		 RestTemplate restTemplate = new RestTemplate();
+         List<LinkedHashMap> jj = restTemplate.getForObject(JOBS_URL, List.class);
+
+         List<Jobs> l = new ArrayList<>();
+         for(LinkedHashMap lm : jj)
+         {
+        	 Jobs jb = new Jobs();
+        	 Set<String> keys = lm.keySet();
+             for(String k:keys){
+            	 if (k.equals("jobTitle"))
+               		 jb.setJobTitle(lm.get(k).toString());
+               	 if(k.equals("billRate"))
+               		 jb.setBillRate(lm.get(k).toString());
+               	
+               	if(k.equals("jobId"))
+               		jb.setJobId((int) lm.get(k));
+               	if(k.equals("company"))
+               		jb.setCompany( (String) lm.get(k));
+             }
+             l.add(jb);
+         }
+         
+         return new ResponseEntity<List<Jobs>>(l, HttpStatus.OK);
+	
 	}
 
 	// -------------------Retrieve Single worker------------------------------------------
@@ -220,15 +218,7 @@ public class RestApiController2 {
          return new ResponseEntity<List<Jobs>>(ll.stream().filter(jobTitle -> wce.getSkills().contains(jobTitle.getJobTitle())).limit(3).collect(Collectors.toList()), HttpStatus.OK);
      // System.out.println( ll.stream().filter(jobTitle -> wce.getSkills().contains(jobTitle.getJobTitle())).limit(3).collect(Collectors.toList()));
 		
-		/*logger.info("Fetching worker with id {}", id);
-		List<Jobs> matchingJobs = workerService.listOfMatchingJobs(id);
-		if (null == matchingJobs) 
-		{
-			logger.error("worker with id {} not found.", id);
-			return new ResponseEntity(new ErrorDesc("No jobs found for worker Skills. " + id 
-					+ " not found"), HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<List<Jobs>>(matchingJobs, HttpStatus.OK);*/
+		
 	}
 
 	
